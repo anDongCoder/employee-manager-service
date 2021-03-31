@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  *  Mapper 接口
  * </p>
  *
- * @author liandong
  * @since 2021-03-31
  */
 public interface DailyReportsMapper extends BaseMapper<DailyReports> {
