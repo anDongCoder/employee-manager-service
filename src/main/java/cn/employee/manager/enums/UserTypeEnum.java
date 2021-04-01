@@ -11,6 +11,7 @@ import java.io.Serializable;
 @Getter
 public enum UserTypeEnum implements IEnum {
 
+    SUPER_ADMIN(0, "超级管理员"),
     ADMIN(1, "管理员"),
     EMPLOYEE(0, "员工");
 

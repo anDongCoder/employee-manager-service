@@ -13,12 +13,8 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import sun.security.provider.MD5;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
@@ -49,6 +45,7 @@ public class UserController {
     }
 
     @Autowired
+    @Lazy
     private JwtUtils jwtUtils;
 
     /**
@@ -62,7 +59,7 @@ public class UserController {
         String password = userDTO.getPassword();
         String newPassword = SecureUtil.md5(password);
         userDTO.setPassword(newPassword);
-        return Resp.okOrFail(userService.addUser(userDTO));
+        return Resp.okOrFail(userService.saveOrUpdate(userDTO));
     }
 
     /**
@@ -76,6 +73,13 @@ public class UserController {
         return Resp.ok(userService.searchUser(userSearchDTO));
     }
 
+
+    /**
+     * 登陆接口
+     *
+     * @param loginDTO
+     * @return
+     */
     @PostMapping("login")
     Resp login(@RequestBody LoginDTO loginDTO) {
         User user = userService.getUser(loginDTO.getUserName());
@@ -89,5 +93,39 @@ public class UserController {
         String token = jwtUtils.createToken(user.getId().toString());
         return Resp.ok(token);
     }
+
+    /**
+     * 获取管理员用户列表
+     *
+     * @return
+     */
+    @GetMapping("admin/list")
+    Resp adminList() {
+        return Resp.ok(userService.getAdminList());
+    }
+
+
+    /**
+     * 删除用户
+     *
+     * @param userId
+     * @return
+     */
+    Resp delete(@RequestParam("userId") Integer userId) {
+        return Resp.ok(userService.deleteUser(userId));
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @param userId
+     * @return
+     */
+    Resp getUser(@RequestParam("userId") Integer userId) {
+        return Resp.ok(userService.getUser(userId));
+    }
+
+
+
 
 }
